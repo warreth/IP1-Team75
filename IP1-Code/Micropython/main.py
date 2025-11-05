@@ -1,7 +1,7 @@
 import machine
 import utime
-import vochtigheid
-import lampen
+import Micropython.vochtigheid as vochtigheid
+import Micropython.lampen as lampen
 import planten_licht
 
  # Init de LED's en pomp

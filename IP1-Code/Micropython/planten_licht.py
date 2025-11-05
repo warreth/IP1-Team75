@@ -1,6 +1,6 @@
 import machine
 import time
-from lampen import set_led_brightness
+from Micropython.lampen import set_led_brightness
 
 # Pin definities voor de LEDs (pas aan naar de juiste GPIO pinnen)
 DAGLICHT_PIN = 13
