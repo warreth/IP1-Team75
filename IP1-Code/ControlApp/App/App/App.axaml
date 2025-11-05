@@ -1,0 +1,30 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:App"
+             xmlns:semi="https://irihi.tech/semi"
+             x:Class="App.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <!--Include SemiTheme (replaces FluentTheme) -->
+        <semi:SemiTheme Locale="en-US" />
+
+        <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
+
+        <!--Global theme-->
+        <Style Selector="TextBlock.Label">
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style Selector="ListBox.LogOutput ListBoxItem">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+    </Application.Styles>
+</Application>

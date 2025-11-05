@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="App.Views.MainView"
+             x:DataType="vm:MainViewModel">  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+  
+  <Grid RowDefinitions="*,Auto">
+    <!-- Main ScrollViewer for the entire content, allows scrolling on smaller screens -->
+    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <Border Padding="16">
+        <!-- Main content grid -->
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto, *" ColumnDefinitions="*" MaxWidth="800" HorizontalAlignment="Center">
+          <TextBlock Grid.Row="0" Text="Smart Package Box" Classes="H1" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+          
+          <!-- Image and Actions Section -->
+          <Grid Grid.Row="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*">
+            <!-- Buttons Row -->
+            <WrapPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+              <Button Content="Move Hatch" Command="{Binding MoveHatchCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
+              <Button Content="Toggle Detection" Command="{Binding ToggleDetectionCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
+              <Button Content="Take Picture" Command="{Binding TakePictureCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
+              <Button Content="Refresh Image" Command="{Binding RefreshImageCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
+              <Button Content="Stop Hatch" Command="{Binding StopHatchCommand}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+            </WrapPanel>
+            
+            <!-- Image Row -->
+            <Border Grid.Row="1" CornerRadius="8" ClipToBounds="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" MinWidth="200" MaxHeight="300" IsVisible="{Binding ImageVisible}">
+              <Image asyncImageLoader:ImageLoader.Source="{Binding NewestImageUrl}" Stretch="Uniform"/>
+            </Border>
+          </Grid>
+          
+          <!-- Settings Expander -->
+          <Expander Grid.Row="2" Header="Settings" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="16" Margin="0,8,0,0">
+              <StackPanel Spacing="4">
+                <TextBlock Text="API URL" Classes="Label"/>
+                <TextBox Text="{Binding EditableApiUrl, Mode=TwoWay}" Watermark="https://api.example.com/"/>
+              </StackPanel>
+              <StackPanel Spacing="4">
+                <TextBlock Text="Image URL" Classes="Label"/>
+                <TextBox Text="{Binding EditableImageUrl, Mode=TwoWay}" Watermark="https://images.example.com/latest.png"/>
+              </StackPanel>
+              <WrapPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <CheckBox Content="Show Image" IsChecked="{Binding EditableImageVisible, Mode=TwoWay}" Margin="0,0,16,0"/>
+                <CheckBox Content="Show Log" IsChecked="{Binding EditableLogVisible, Mode=TwoWay}"/>
+              </WrapPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                  <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,0,12,0"/>
+                  <Button Content="Clear Logs" Command="{Binding ClearLogsCommand}"/>
+              </StackPanel>
+
+              
+              <!-- Debugging Info -->
+              <StackPanel Orientation="Vertical" Spacing="2" Margin="0,4,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="NewestImageUrl:" />
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding NewestImageUrl}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableApiUrl:" />
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableApiUrl}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableImageUrl:" />
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableImageUrl}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableImageVisible:" />
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableImageVisible}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableLogVisible:" />
+                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableLogVisible}" />
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+          </Expander>
+          
+          <!-- Activity Log Section -->
+          <TextBlock Grid.Row="3" Text="Activity Log" Classes="H2" FontSize="16" IsVisible="{Binding LogVisible}" HorizontalAlignment="Center"/>
+          <Border Grid.Row="4" IsVisible="{Binding LogVisible}" CornerRadius="6" ClipToBounds="True" Background="{DynamicResource SemiBackgroundB2}" BorderThickness="1" BorderBrush="{DynamicResource SemiBorderBrush}" VerticalAlignment="Top" HorizontalAlignment="Center" MinHeight="100" MaxHeight="200" MaxWidth="500">
+            <ScrollViewer Name="LogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+              <ListBox ItemsSource="{Binding LogMessages}" Classes="LogOutput" SelectionMode="Single" Background="Transparent"/>
+            </ScrollViewer>
+          </Border>
+        </Grid>
+
+      </Border>
+    </ScrollViewer>
+    
+    <!-- Credits section at the bottom -->
+    <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,8,0,8">
+      <TextBlock FontSize="12" Foreground="Gray" HorizontalAlignment="Center">
+        <Run Text="Credits: "/>
+        <HyperlinkButton Content="github.com/WarreTh" NavigateUri="https://github.com/WarreTh" ToolTip.Tip="Visit my GitHub"/>
+      </TextBlock>
+    </StackPanel>
+  </Grid>
+</UserControl>

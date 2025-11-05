@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "68/c4uwEwGU=",
+  "success": true,
+  "projectFilePath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/PinController/PinController.csproj",
+  "expectedPackageFiles": [
+    "/home/w/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.9/microsoft.aspnetcore.app.ref.9.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}

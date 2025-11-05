@@ -1,8 +1,9 @@
 import machine
 import utime
-import Micropython.vochtigheid as vochtigheid
-import Micropython.lampen as lampen
+import vochtigheid
+import lampen
 import planten_licht
+import pomp
 
  # Init de LED's en pomp
 """" 
@@ -13,4 +14,5 @@ import planten_licht
 """
 # Main code
 if __name__ == '__main__':
+    pomp.set_pomp_speed(0)  # Zet de pomp uit bij start
     planten_licht.licht_cyclus()

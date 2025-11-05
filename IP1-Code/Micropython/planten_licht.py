@@ -1,6 +1,6 @@
 import machine
 import time
-from Micropython.lampen import set_led_brightness
+import lampen
 
 # Pin definities voor de LEDs (pas aan naar de juiste GPIO pinnen)
 DAGLICHT_PIN = 13
@@ -37,26 +37,26 @@ def licht_cyclus():
     while True:
         # --- HOOFDLICHT FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht AAN voor {HOOFDLICHT_AAN_UUR} uur.")
-        set_led_brightness(led_daglicht, MAX_BRIGHTNESS)
-        set_led_brightness(led_blooming, MAX_BRIGHTNESS)
-        set_led_brightness(led_infrared, OFF) # Zorg dat infrarood uit is
+        lampen.set_led_brightness(led_daglicht, MAX_BRIGHTNESS)
+        lampen.set_led_brightness(led_blooming, MAX_BRIGHTNESS)
+        lampen.set_led_brightness(led_infrared, OFF) # Zorg dat infrarood uit is
         
         time.sleep(HOOFDLICHT_AAN_UUR * UUR_IN_SECONDE)
         
         # --- INFRAROOD FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht UIT.")
-        set_led_brightness(led_daglicht, OFF)
-        set_led_brightness(led_blooming, OFF)
+        lampen.set_led_brightness(led_daglicht, OFF)
+        lampen.set_led_brightness(led_blooming, OFF)
         
         print(f"[{get_huidige_tijd_string()}] Infraroodlicht AAN voor {INFRAROOD_AAN_UUR} uur.")
-        set_led_brightness(led_infrared, MAX_BRIGHTNESS)
+        lampen.set_led_brightness(led_infrared, MAX_BRIGHTNESS)
         
         time.sleep(INFRAROOD_AAN_UUR * UUR_IN_SECONDE)
 
         # --- DONKERE FASE ---
         uren_uit = TOTAAL_UUR_PER_DAG - HOOFDLICHT_AAN_UUR - INFRAROOD_AAN_UUR
         print(f"[{get_huidige_tijd_string()}] Alle lichten UIT voor {uren_uit} uur.")
-        set_led_brightness(led_infrared, OFF)
+        lampen.set_led_brightness(led_infrared, OFF)
         
         time.sleep(uren_uit * UUR_IN_SECONDE)
         print(f"[{get_huidige_tijd_string()}] Einde donkere fase. Nieuwe cyclus start.")
