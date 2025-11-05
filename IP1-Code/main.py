@@ -14,3 +14,6 @@ lampen.set_led_brightness(led_ch4, 60000)
 lampen.set_led_brightness(led_ch3, 60000)
 lampen.set_led_brightness(led_ch2, 60000)
 print("LED's op maximale helderheid gezet.")
+
+vochtigheid_percentage = vochtigheid.read_vochtigheid()
+print(f"Vochtigheidspercentage: {vochtigheid_percentage}%")

@@ -1,6 +1,30 @@
 from machine import ADC, Pin
 
-def read_vochtigheid():
-    sensor = ADC(Pin(28))  # Assuming the sensor is connected to GPIO 26 (ADC0)
-    vochtigheid_waarde = sensor.read_u16()
-    print("DEBUG: Vochtigheid waarde:", vochtigheid_waarde)
+DRY_RAW = 52000 
+WET_RAW = 25000 
+
+ADC_PIN = 28 # Pin van de vochtigheidssensor
+
+def _raw_to_percent(raw: int) -> int:
+    # Convert raw ADC value to percentage; assumes the dry value is higher than wet.
+    if DRY_RAW == WET_RAW:
+        return 0
+    percent = (DRY_RAW - raw) * 100.0 / (DRY_RAW - WET_RAW)
+    if percent < 0:
+        percent = 0
+    elif percent > 100:
+        percent = 100
+    return int(round(percent))
+
+def read_vochtigheid() -> int:
+    # Read ADC, convert to percentage, print concise message, return percentage.
+    try:
+        sensor = ADC(Pin(ADC_PIN))
+        raw_value = sensor.read_u16()
+    except Exception as e:
+        print(f"ERROR: Failed to read ADC on GP{ADC_PIN}: {e}")
+        return 0
+
+    percentage = _raw_to_percent(raw_value)
+    print(f"De aarde is {percentage}% nat")
+    return percentage
