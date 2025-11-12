@@ -1,6 +1,0 @@
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.csproj.AssemblyReference.cache
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.GeneratedMSBuildEditorConfig.editorconfig
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.AssemblyInfoInputs.cache
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.AssemblyInfo.cs
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.csproj.CoreCompileInputs.cache
-/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/Debug/net9.0/Api.sourcelink.json
