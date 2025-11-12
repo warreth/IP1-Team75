@@ -1,7 +1,7 @@
 import machine
 import time
 import lampen
-
+import lcd
 # Pin definities voor de LEDs (pas aan naar de juiste GPIO pinnen)
 DAGLICHT_PIN = 13
 BLOOMING_PIN = 14
@@ -37,26 +37,29 @@ def licht_cyclus():
     while True:
         # --- HOOFDLICHT FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht AAN voor {HOOFDLICHT_AAN_UUR} uur.")
+        #lcd.start_lcd_display(HOOFDLICHT_AAN_UUR*60, "hoofdlicht")
         lampen.set_led_brightness(led_daglicht, MAX_BRIGHTNESS)
         lampen.set_led_brightness(led_blooming, MAX_BRIGHTNESS)
         lampen.set_led_brightness(led_infrared, OFF) # Zorg dat infrarood uit is
-        
+        #lcd.stop_lcd_display()
         time.sleep(HOOFDLICHT_AAN_UUR * UUR_IN_SECONDE)
         
         # --- INFRAROOD FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht UIT.")
+        #lcd.start_lcd_display(INFRAROOD_AAN_UUR*60, "infraroodlicht")
         lampen.set_led_brightness(led_daglicht, OFF)
         lampen.set_led_brightness(led_blooming, OFF)
-        
         print(f"[{get_huidige_tijd_string()}] Infraroodlicht AAN voor {INFRAROOD_AAN_UUR} uur.")
         lampen.set_led_brightness(led_infrared, MAX_BRIGHTNESS)
-        
         time.sleep(INFRAROOD_AAN_UUR * UUR_IN_SECONDE)
+        #lcd.stop_lcd_display()
 
         # --- DONKERE FASE ---
         uren_uit = TOTAAL_UUR_PER_DAG - HOOFDLICHT_AAN_UUR - INFRAROOD_AAN_UUR
+        #lcd.start_lcd_display(uren_uit*60, "donkere fase")
         print(f"[{get_huidige_tijd_string()}] Alle lichten UIT voor {uren_uit} uur.")
         lampen.set_led_brightness(led_infrared, OFF)
+        #lcd.stop_lcd_display()
         
         time.sleep(uren_uit * UUR_IN_SECONDE)
         print(f"[{get_huidige_tijd_string()}] Einde donkere fase. Nieuwe cyclus start.")

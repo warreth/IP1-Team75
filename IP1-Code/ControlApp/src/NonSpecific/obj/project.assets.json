@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj",
+      "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj",
       "projectName": "NonSpecific",
-      "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj",
+      "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj",
       "packagesPath": "/home/w/.nuget/packages/",
-      "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/obj/",
+      "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/w/.nuget/NuGet/NuGet.Config"

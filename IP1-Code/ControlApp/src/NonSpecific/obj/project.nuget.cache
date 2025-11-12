@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Lcvhv0zXvI4=",
+  "dgSpecHash": "k8KouhpwsUk=",
   "success": true,
-  "projectFilePath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj",
+  "projectFilePath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj",
   "expectedPackageFiles": [
     "/home/w/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.9/microsoft.aspnetcore.app.ref.9.0.9.nupkg.sha512"
   ],

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainController/MainController.csproj": {}
+    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/MainController/MainController.csproj": {}
   },
   "projects": {
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/Api.csproj": {
+    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/Api.csproj",
+        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/Api.csproj",
         "projectName": "Api",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/Api.csproj",
+        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/Api.csproj",
         "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/obj/",
+        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/w/.nuget/NuGet/NuGet.Config"
@@ -26,17 +26,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
+              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj": {
+                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj"
               }
             }
           }
@@ -90,179 +81,14 @@
         }
       }
     },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj": {
+    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/MainController/MainController.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj",
-        "projectName": "CameraFeed",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj",
-        "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/obj/",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/home/w/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net9.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
-            "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
-      },
-      "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
-          "dependencies": {
-            "Emgu.CV": {
-              "target": "Package",
-              "version": "[4.10.0.5680, )"
-            },
-            "Emgu.CV.runtime.debian-arm64": {
-              "target": "Package",
-              "version": "[4.10.0.5680, )"
-            },
-            "SixLabors.ImageSharp": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.9, 9.0.9]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-arm64": {
-          "#import": []
-        }
-      }
-    },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/ImageServer.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/ImageServer.csproj",
-        "projectName": "ImageServer",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/ImageServer.csproj",
-        "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/obj/",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/home/w/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net9.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
-            "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
-      },
-      "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.9, 9.0.9]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-arm64": {
-          "#import": []
-        }
-      }
-    },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainController/MainController.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainController/MainController.csproj",
+        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/MainController/MainController.csproj",
         "projectName": "MainController",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainController/MainController.csproj",
+        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/MainController/MainController.csproj",
         "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainController/obj/",
+        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/MainController/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/w/.nuget/NuGet/NuGet.Config"
@@ -277,23 +103,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/Api.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/Api/Api.csproj"
+              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/Api.csproj": {
+                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/Api/Api.csproj"
               },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/ImageServer.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/ImageServer/ImageServer.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
+              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj": {
+                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj"
               }
             }
           }
@@ -348,171 +162,14 @@
         }
       }
     },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj": {
+    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj",
-        "projectName": "MainFunctions",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/MainFunctions.csproj",
-        "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MainFunctions/obj/",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/home/w/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net9.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
-            "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/CameraFeed/CameraFeed.csproj"
-              },
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
-      },
-      "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.9, 9.0.9]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-arm64": {
-          "#import": []
-        }
-      }
-    },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj",
-        "projectName": "MotorController",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/MotorController.csproj",
-        "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/MotorController/obj/",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/home/w/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net9.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
-            "projectReferences": {
-              "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-                "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
-      },
-      "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
-          "dependencies": {
-            "System.Device.Gpio": {
-              "target": "Package",
-              "version": "[3.2.0, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.9, 9.0.9]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-arm64": {
-          "#import": []
-        }
-      }
-    },
-    "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj",
+        "projectUniqueName": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj",
         "projectName": "NonSpecific",
-        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/NonSpecific.csproj",
+        "projectPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/NonSpecific.csproj",
         "packagesPath": "/home/w/.nuget/packages/",
-        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/C#/src/NonSpecific/obj/",
+        "outputPath": "/home/w/Documents/School/25-26/IP/IP1-Team75/IP1-Code/ControlApp/src/NonSpecific/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/w/.nuget/NuGet/NuGet.Config"
