@@ -3,15 +3,9 @@ import time
 import uasyncio
 import lampen
 import lcd
-# Pin definities voor de LEDs (pas aan naar de juiste GPIO pinnen)
-DAGLICHT_PIN = 13
-BLOOMING_PIN = 14
-INFRARED_PIN = 15
+import timer_manager
 
-# Initialiseer de PWM voor elke LED
-led_daglicht = machine.PWM(machine.Pin(DAGLICHT_PIN))
-led_blooming = machine.PWM(machine.Pin(BLOOMING_PIN))
-led_infrared = machine.PWM(machine.Pin(INFRARED_PIN))
+lcdOn = False #! Control LCD usage (good for debugging without LCD)
 
 # Maximale helderheid (65535 is 100% duty cycle)
 MAX_BRIGHTNESS = 65535
@@ -38,33 +32,40 @@ async def licht_cyclus():
     while True:
         # --- HOOFDLICHT FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht AAN voor {HOOFDLICHT_AAN_UUR} uur.")
-        #lcd.start_lcd_display(HOOFDLICHT_AAN_UUR*60, "HOOFDLICHT")
-        lampen.set_led_brightness(led_daglicht, MAX_BRIGHTNESS)
-        lampen.set_led_brightness(led_blooming, MAX_BRIGHTNESS)
-        lampen.set_led_brightness(led_infrared, OFF) # Zorg dat infrarood uit is
-        #lcd.stop_lcd_display()
+        if lcdOn: lcd.stop_lcd_display()
+        if lcdOn: lcd.start_lcd_display(HOOFDLICHT_AAN_UUR*60, "HOOFDLICHT")
+        lampen.set_daglicht_brightness(MAX_BRIGHTNESS)
+        lampen.set_blooming_brightness(MAX_BRIGHTNESS)
+        lampen.set_infrared_brightness(OFF) # Zorg dat infrarood uit is
+        
+        timer_manager.start_timer(HOOFDLICHT_AAN_UUR*UUR_IN_SECONDE, "HOOFDLICHT")
         await uasyncio.sleep(HOOFDLICHT_AAN_UUR * UUR_IN_SECONDE)
         
         # --- INFRAROOD FASE ---
         print(f"[{get_huidige_tijd_string()}] Hoofdlicht UIT.")
-        #lcd.start_lcd_display(INFRAROOD_AAN_UUR*60, "INFRAROOD")
-        lampen.set_led_brightness(led_daglicht, OFF)
-        lampen.set_led_brightness(led_blooming, OFF)
+        if lcdOn: lcd.stop_lcd_display()
+        if lcdOn: lcd.start_lcd_display(INFRAROOD_AAN_UUR*60, "INFRAROOD")
+        lampen.set_daglicht_brightness(OFF)
+        lampen.set_blooming_brightness(OFF)
         print(f"[{get_huidige_tijd_string()}] Infraroodlicht AAN voor {INFRAROOD_AAN_UUR} uur.")
-        lampen.set_led_brightness(led_infrared, MAX_BRIGHTNESS)
+        lampen.set_infrared_brightness(MAX_BRIGHTNESS)
+
+        timer_manager.start_timer(INFRAROOD_AAN_UUR*UUR_IN_SECONDE, "INFRAROOD")
         await uasyncio.sleep(INFRAROOD_AAN_UUR * UUR_IN_SECONDE)
-        #lcd.stop_lcd_display()
+
 
         # --- DONKERE FASE ---
         uren_uit = TOTAAL_UUR_PER_DAG - HOOFDLICHT_AAN_UUR - INFRAROOD_AAN_UUR
-        #lcd.start_lcd_display(uren_uit*60, "DONKER")
+        if lcdOn: lcd.stop_lcd_display()
+        if lcdOn: lcd.start_lcd_display(uren_uit*60, "DONKER")
         print(f"[{get_huidige_tijd_string()}] Alle lichten UIT voor {uren_uit} uur.")
-        lampen.set_led_brightness(led_infrared, OFF)
-        #lcd.stop_lcd_display()
-        
+        lampen.set_infrared_brightness(OFF)
+
+        timer_manager.start_timer(uren_uit*UUR_IN_SECONDE, "DONKER")
         await uasyncio.sleep(uren_uit * UUR_IN_SECONDE)
         print(f"[{get_huidige_tijd_string()}] Einde donkere fase. Nieuwe cyclus start.")
 
-# Om de cyclus te starten, roep je de functie aan in je main.py
+# Start cyclus als test
 # if __name__ == '__main__':
 #     licht_cyclus()
+

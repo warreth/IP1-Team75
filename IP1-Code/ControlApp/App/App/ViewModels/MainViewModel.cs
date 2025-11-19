@@ -4,30 +4,20 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using App.Services;
+using PinController;
+using Avalonia.Threading;
+using System.Text.Json;
 
 namespace App.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private string imageServerUrl = "http://raspberrypi.local:8081/latest.png";
-
-    [ObservableProperty]
-    private string apiUrl = "https://raspberrypi.local:8080";
-
+    private string apiUrl = "https://ip75-pi3.netbird.cloud:8080";
 
     // Add properties for editing and saving settings
     [ObservableProperty]
     private string? editableApiUrl;
-
-    [ObservableProperty]
-    private string? editableImageUrl;
-
-    [ObservableProperty]
-    private bool imageVisible = true;
-
-    [ObservableProperty]
-    private bool editableImageVisible;
 
     [ObservableProperty]
     private bool logVisible = true;
@@ -36,11 +26,37 @@ public partial class MainViewModel : ViewModelBase
     private bool editableLogVisible;
 
     [ObservableProperty]
-    private string newestImageUrl = "";
+    private float humidity;
 
-    public ObservableCollection<string> LogMessages { get; } = new ObservableCollection<string>();
+    [ObservableProperty]
+    private int lamp1;
 
-    private readonly ApiService _apiService = new ApiService();
+    [ObservableProperty]
+    private int lamp2;
+
+    [ObservableProperty]
+    private int lamp3;
+
+    [ObservableProperty]
+    private int pumpSpeed;
+
+    [ObservableProperty]
+    private string remainingTime = "--:--";
+
+    [ObservableProperty]
+    private string currentCycle = "Unknown";
+
+    [ObservableProperty]
+    private int targetPumpSpeed;
+
+    [ObservableProperty]
+    private int targetLamp1;
+
+    [ObservableProperty]
+    private int targetLamp2;
+
+    [ObservableProperty]
+    private int targetLamp3;
 
     public void Log(string message) //TODO: Make the logs scroll down when new log is added
     {
@@ -52,121 +68,14 @@ public partial class MainViewModel : ViewModelBase
         LogMessages.Add(logEntry);
     }
 
-    [RelayCommand]
-    private async Task RefreshImageAsync() //TODO: Fix image not showing up on mobile (prob issue with the asyncImageLoader library)
-    {
-        string? result = await _apiService.ContactUrlAsync(ApiUrl, "newest-url");
 
-        if (string.IsNullOrEmpty(result) || result.Contains("Error"))
-        {
-            Log($"Refreshimage request failed: {result}");
-            OnPropertyChanged(nameof(LogMessages));
-            NewestImageUrl = ImageServerUrl;
-            return;
-        }
-        NewestImageUrl = ImageServerUrl + result;
-        Log($"Refreshimage result: {NewestImageUrl}");
-        OnPropertyChanged(nameof(LogMessages));
 
-    }
 
-    [RelayCommand]
-    private async Task StopHatchAsync()
-    {
-        string? result = await _apiService.ContactUrlAsync(ApiUrl, "stop-hatch");
-
-        // Check if result is "true" or "false" before converting
-        bool isOpen;
-        if (result == "true" || result == "false")
-        {
-            isOpen = Convert.ToBoolean(result);
-        }
-        else
-        {
-            Log($"StopHatch request failed: unexpected response '{result}'");
-            OnPropertyChanged(nameof(LogMessages));
-            return;
-        }
-        result = isOpen ? "Hatch is now stopped" : "Hatch could not be stopped (see RPi logs)";
-        Log($"StopHatch result: {result}");
-
-        OnPropertyChanged(nameof(LogMessages));
-    }
-
-    [RelayCommand]
-    private async Task ToggleDetectionAsync()
-    {
-        string? result = await _apiService.ContactUrlAsync(ApiUrl, "toggle-detection");
-
-        if (result == "enabled")
-        {
-            Log("Detection is now enabled");
-        }
-        else if (result == "disabled")
-        {
-            Log("Detection is now disabled");
-        }
-        else
-        {
-            Log($"ToggleDetection request failed: unexpected response '{result}'");
-            OnPropertyChanged(nameof(LogMessages));
-            return;
-        }
-        OnPropertyChanged(nameof(LogMessages));
-    }
-
-    [RelayCommand]
-    private async Task MoveHatchAsync()
-    {
-        string? result = await _apiService.ContactUrlAsync(ApiUrl, "move-hatch");
-
-        // Check if result is "true" or "false" before converting
-        bool isOpen;
-        if (result == "true" || result == "false")
-        {
-            isOpen = Convert.ToBoolean(result);
-        }
-        else
-        {
-            Log($"Openhatch request failed: unexpected response '{result}'");
-            OnPropertyChanged(nameof(LogMessages));
-            return;
-        }
-        result = isOpen ? "Hatch is now open" : "Hatch is now closed";
-        Log($"Openhatch result: {result}");
-
-        OnPropertyChanged(nameof(LogMessages));
-    }
-
-    [RelayCommand]
-    private async Task TakePictureAsync()
-    {
-        string? result = await _apiService.ContactUrlAsync(ApiUrl, "take-picture");
-
-        // Check if result is "true" or "false" before converting
-        bool isOpen;
-        if (result == "true" || result == "false")
-        {
-            isOpen = Convert.ToBoolean(result);
-        }
-        else
-        {
-            Log($"TakePicture request failed: unexpected response '{result}'");
-            OnPropertyChanged(nameof(LogMessages));
-            return;
-        }
-        result = isOpen ? "Picture taken" : "Picture couldnt be taken (see RPi logs)";
-        Log($"TakePicture result: {result}");
-
-        OnPropertyChanged(nameof(LogMessages));
-    }
 
     [RelayCommand]
     private void LoadSettings()
     {
         EditableApiUrl = ApiUrl;
-        EditableImageUrl = ImageServerUrl;
-        EditableImageVisible = ImageVisible;
         EditableLogVisible = LogVisible;
         Log("Loaded settings into editable fields");
     }
@@ -181,24 +90,61 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void SaveSettings()
     {
-        if (string.IsNullOrWhiteSpace(EditableApiUrl) || string.IsNullOrWhiteSpace(EditableImageUrl))
+        if (string.IsNullOrWhiteSpace(EditableApiUrl))
         {
-            Log("API or Image URL cannot be empty");
+            Log("API URL cannot be empty");
             return;
         }
 
         ApiUrl = EditableApiUrl;
-        ImageServerUrl = EditableImageUrl;
-        ImageVisible = EditableImageVisible;
         LogVisible = EditableLogVisible;
-        /*Log(
-            $"Settings saved:\n" +
-            $"  API URL      = {ApiUrl}\n" +
-            $"  Image URL    = {ImageServerUrl}\n" +
-            $"  Image Visible= {ImageVisible}\n" +
-            $"  Log Visible  = {LogVisible}"
-        );*/
     }
+
+    [RelayCommand]
+    private async Task SetPumpSpeed(decimal? speed)
+    {
+        if (speed.HasValue)
+        {
+            await _apiService.GetRawJsonAsync(ApiUrl, $"set-pump-speed?value={speed}");
+            Log($"Set Pump Speed to {speed}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task SetLamp1(decimal? brightness)
+    {
+        if (brightness.HasValue)
+        {
+            await _apiService.GetRawJsonAsync(ApiUrl, $"set-lamp-dl?value={brightness}");
+            Log($"Set Lamp 1 (Daylight) to {brightness}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task SetLamp2(decimal? brightness)
+    {
+        if (brightness.HasValue)
+        {
+            await _apiService.GetRawJsonAsync(ApiUrl, $"set-lamp-bloom?value={brightness}");
+            Log($"Set Lamp 2 (Bloom) to {brightness}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task SetLamp3(decimal? brightness)
+    {
+        if (brightness.HasValue)
+        {
+            await _apiService.GetRawJsonAsync(ApiUrl, $"set-lamp-ir?value={brightness}");
+            Log($"Set Lamp 3 (Infrared) to {brightness}");
+        }
+    }
+
+    public ObservableCollection<string> LogMessages { get; } = new ObservableCollection<string>();
+
+    private readonly ApiService _apiService = new ApiService();
+
+    private DispatcherTimer _logTimer;
 
     partial void OnApiUrlChanged(string value)
     {
@@ -206,17 +152,68 @@ public partial class MainViewModel : ViewModelBase
             EditableApiUrl = value;
     }
 
-    partial void OnImageServerUrlChanged(string value)
-    {
-        if (string.IsNullOrEmpty(EditableImageUrl))
-            EditableImageUrl = value;
-    }
-
     public MainViewModel()
     {
         EditableApiUrl = ApiUrl;
-        EditableImageUrl = ImageServerUrl;
-        EditableImageVisible = ImageVisible;
         EditableLogVisible = LogVisible;
+
+        // Start polling timer
+        var timer = new System.Timers.Timer(1000);
+        timer.Elapsed += async (s, e) =>
+        {
+            var json = await _apiService.GetRawJsonAsync(ApiUrl, "status");
+            if (!string.IsNullOrEmpty(json))
+            {
+                try
+                {
+                    var status = System.Text.Json.JsonSerializer.Deserialize<PicoStatus>(json);
+                    if (status != null)
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            Humidity = status.Humidity;
+                            Lamp1 = status.Lamp1;
+                            Lamp2 = status.Lamp2;
+                            Lamp3 = status.Lamp3;
+                            PumpSpeed = status.PumpSpeed;
+                            RemainingTime = $"{status.Uren}h {status.Minuten}m";
+                            CurrentCycle = status.Cycle ?? "Unknown";
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => Log($"Error parsing status: {ex.Message}"));
+                }
+            }
+        };
+        timer.Start();
+
+        _logTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+        _logTimer.Tick += async (sender, e) => await FetchLogs();
+        _logTimer.Start();
+    }
+
+    private async Task FetchLogs()
+    {
+        try
+        {
+            var json = await _apiService.GetRawJsonAsync(ApiUrl, "logs");
+            if (!string.IsNullOrEmpty(json))
+            {
+                var logs = JsonSerializer.Deserialize<string[]>(json);
+                if (logs != null)
+                {
+                    foreach (var log in logs)
+                    {
+                        Log($"[Pico] {log}");
+                    }
+                }
+            }
+        }
+        catch { /* Ignore errors */ }
     }
 }

@@ -3,103 +3,116 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:App.ViewModels"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="App.Views.MainView"
-             x:DataType="vm:MainViewModel">  <Design.DataContext>
+             x:DataType="vm:MainViewModel">
+  
+  <Design.DataContext>
     <vm:MainViewModel />
   </Design.DataContext>
-  
-  <Grid RowDefinitions="*,Auto">
-    <!-- Main ScrollViewer for the entire content, allows scrolling on smaller screens -->
-    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-      <Border Padding="16">
-        <!-- Main content grid -->
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, *" ColumnDefinitions="*" MaxWidth="800" HorizontalAlignment="Center">
-          <TextBlock Grid.Row="0" Text="Smart Package Box" Classes="H1" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-          
-          <!-- Image and Actions Section -->
-          <Grid Grid.Row="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*">
-            <!-- Buttons Row -->
-            <WrapPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-              <Button Content="Move Hatch" Command="{Binding MoveHatchCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
-              <Button Content="Toggle Detection" Command="{Binding ToggleDetectionCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
-              <Button Content="Take Picture" Command="{Binding TakePictureCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
-              <Button Content="Refresh Image" Command="{Binding RefreshImageCommand}" HorizontalAlignment="Center" Margin="0,8,12,0"/>
-              <Button Content="Stop Hatch" Command="{Binding StopHatchCommand}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-            </WrapPanel>
-            
-            <!-- Image Row -->
-            <Border Grid.Row="1" CornerRadius="8" ClipToBounds="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" MinWidth="200" MaxHeight="300" IsVisible="{Binding ImageVisible}">
-              <Image asyncImageLoader:ImageLoader.Source="{Binding NewestImageUrl}" Stretch="Uniform"/>
-            </Border>
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <Grid RowDefinitions="Auto, *" Margin="20" MaxWidth="1000" HorizontalAlignment="Center">
+      
+      <!-- Header -->
+      <StackPanel Grid.Row="0" Margin="0,0,0,20">
+        <TextBlock Text="Plant Control System" Classes="H1" HorizontalAlignment="Center" FontWeight="Light" FontSize="32"/>
+        <TextBlock Text="Monitor and control your environment" Classes="Caption" HorizontalAlignment="Center" Opacity="0.6"/>
+      </StackPanel>
+
+      <!-- Main Content -->
+      <StackPanel Grid.Row="1" Spacing="20">
+        
+        <!-- Sensor Dashboard -->
+        <Border Classes="Card" CornerRadius="12" Padding="20" Background="{DynamicResource SemiColorBackground0}" BoxShadow="0 4 10 0 #1A000000">
+          <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
+            <TextBlock Grid.Column="0" Text="HUMIDITY" Classes="Tertiary" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold" Opacity="0.5"/>
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Humidity, StringFormat='{}{0:F1}%'}" HorizontalAlignment="Center" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource SemiColorPrimary}"/>
+
+            <TextBlock Grid.Column="1" Text="PUMP SPEED" Classes="Tertiary" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold" Opacity="0.5"/>
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding PumpSpeed}" HorizontalAlignment="Center" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource SemiColorInfo}"/>
+
+            <TextBlock Grid.Column="2" Text="CURRENT CYCLE" Classes="Tertiary" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold" Opacity="0.5"/>
+            <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding CurrentCycle}" HorizontalAlignment="Center" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource SemiColorWarning}"/>
+
+            <TextBlock Grid.Column="3" Text="TIME LEFT" Classes="Tertiary" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold" Opacity="0.5"/>
+            <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding RemainingTime}" HorizontalAlignment="Center" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource SemiColorSuccess}"/>
           </Grid>
-          
-          <!-- Settings Expander -->
-          <Expander Grid.Row="2" Header="Settings" HorizontalAlignment="Stretch">
-            <StackPanel Spacing="16" Margin="0,8,0,0">
-              <StackPanel Spacing="4">
-                <TextBlock Text="API URL" Classes="Label"/>
-                <TextBox Text="{Binding EditableApiUrl, Mode=TwoWay}" Watermark="https://api.example.com/"/>
-              </StackPanel>
-              <StackPanel Spacing="4">
-                <TextBlock Text="Image URL" Classes="Label"/>
-                <TextBox Text="{Binding EditableImageUrl, Mode=TwoWay}" Watermark="https://images.example.com/latest.png"/>
-              </StackPanel>
-              <WrapPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <CheckBox Content="Show Image" IsChecked="{Binding EditableImageVisible, Mode=TwoWay}" Margin="0,0,16,0"/>
-                <CheckBox Content="Show Log" IsChecked="{Binding EditableLogVisible, Mode=TwoWay}"/>
-              </WrapPanel>
-              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                  <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,0,12,0"/>
-                  <Button Content="Clear Logs" Command="{Binding ClearLogsCommand}"/>
-              </StackPanel>
+        </Border>
 
-              
-              <!-- Debugging Info -->
-              <StackPanel Orientation="Vertical" Spacing="2" Margin="0,4,0,0">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="NewestImageUrl:" />
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding NewestImageUrl}" />
+        <!-- Controls Section -->
+        <TextBlock Text="Controls" Classes="H4" Margin="0,10,0,0"/>
+        
+        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <!-- Pump Control -->
+            <Border Width="220" Margin="10" CornerRadius="8" Padding="15" Background="{DynamicResource SemiColorBackground0}" BoxShadow="0 2 5 0 #10000000">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Pump Speed" FontWeight="Bold"/>
+                    <NumericUpDown Value="{Binding TargetPumpSpeed}" Minimum="0" Maximum="100" Increment="5" Name="PumpSpeedInput"/>
+                    <Button Content="Set Speed" Command="{Binding SetPumpSpeedCommand}" CommandParameter="{Binding #PumpSpeedInput.Value}" Classes="Primary" HorizontalAlignment="Stretch"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableApiUrl:" />
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableApiUrl}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableImageUrl:" />
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableImageUrl}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableImageVisible:" />
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableImageVisible}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="EditableLogVisible:" />
-                  <TextBlock FontSize="10" TextWrapping="NoWrap" Text="{Binding EditableLogVisible}" />
-                </StackPanel>
-              </StackPanel>
-            </StackPanel>
-          </Expander>
-          
-          <!-- Activity Log Section -->
-          <TextBlock Grid.Row="3" Text="Activity Log" Classes="H2" FontSize="16" IsVisible="{Binding LogVisible}" HorizontalAlignment="Center"/>
-          <Border Grid.Row="4" IsVisible="{Binding LogVisible}" CornerRadius="6" ClipToBounds="True" Background="{DynamicResource SemiBackgroundB2}" BorderThickness="1" BorderBrush="{DynamicResource SemiBorderBrush}" VerticalAlignment="Top" HorizontalAlignment="Center" MinHeight="100" MaxHeight="200" MaxWidth="500">
-            <ScrollViewer Name="LogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-              <ListBox ItemsSource="{Binding LogMessages}" Classes="LogOutput" SelectionMode="Single" Background="Transparent"/>
-            </ScrollViewer>
-          </Border>
-        </Grid>
+            </Border>
 
-      </Border>
-    </ScrollViewer>
-    
-    <!-- Credits section at the bottom -->
-    <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,8,0,8">
-      <TextBlock FontSize="12" Foreground="Gray" HorizontalAlignment="Center">
-        <Run Text="Credits: "/>
-        <HyperlinkButton Content="github.com/WarreTh" NavigateUri="https://github.com/WarreTh" ToolTip.Tip="Visit my GitHub"/>
-      </TextBlock>
-    </StackPanel>
-  </Grid>
+            <!-- Lamp 1 Control -->
+            <Border Width="220" Margin="10" CornerRadius="8" Padding="15" Background="{DynamicResource SemiColorBackground0}" BoxShadow="0 2 5 0 #10000000">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Daylight (Lamp 1)" FontWeight="Bold"/>
+                    <NumericUpDown Value="{Binding TargetLamp1}" Minimum="0" Maximum="65535" Increment="5000" Name="Lamp1Input"/>
+                    <Button Content="Set Brightness" Command="{Binding SetLamp1Command}" CommandParameter="{Binding #Lamp1Input.Value}" Classes="Primary" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Lamp 2 Control -->
+            <Border Width="220" Margin="10" CornerRadius="8" Padding="15" Background="{DynamicResource SemiColorBackground0}" BoxShadow="0 2 5 0 #10000000">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Bloom (Lamp 2)" FontWeight="Bold"/>
+                    <NumericUpDown Value="{Binding TargetLamp2}" Minimum="0" Maximum="65535" Increment="5000" Name="Lamp2Input"/>
+                    <Button Content="Set Brightness" Command="{Binding SetLamp2Command}" CommandParameter="{Binding #Lamp2Input.Value}" Classes="Primary" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Lamp 3 Control -->
+            <Border Width="220" Margin="10" CornerRadius="8" Padding="15" Background="{DynamicResource SemiColorBackground0}" BoxShadow="0 2 5 0 #10000000">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Infrared (Lamp 3)" FontWeight="Bold"/>
+                    <NumericUpDown Value="{Binding TargetLamp3}" Minimum="0" Maximum="65535" Increment="5000" Name="Lamp3Input"/>
+                    <Button Content="Set Brightness" Command="{Binding SetLamp3Command}" CommandParameter="{Binding #Lamp3Input.Value}" Classes="Primary" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+
+        <!-- Settings & Logs -->
+        <Expander Header="Advanced Settings &amp; Logs" HorizontalAlignment="Stretch" Margin="0,20,0,0">
+          <StackPanel Spacing="15">
+            <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="API URL:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditableApiUrl}" Watermark="https://api.example.com/"/>
+                
+                <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Show Activity Log" IsChecked="{Binding EditableLogVisible}" Margin="0,10,0,0"/>
+                
+                <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Orientation="Vertical" Margin="10,0,0,0" Spacing="5">
+                    <Button Content="Save" Command="{Binding SaveSettingsCommand}" Classes="Success"/>
+                    <Button Content="Clear Logs" Command="{Binding ClearLogsCommand}" Classes="Warning"/>
+                </StackPanel>
+            </Grid>
+
+            <Border IsVisible="{Binding LogVisible}" CornerRadius="6" Height="150" Background="{DynamicResource SemiColorBackground1}" BorderThickness="1" BorderBrush="{DynamicResource SemiColorBorder}">
+              <ScrollViewer Name="LogScrollViewer">
+                <ListBox ItemsSource="{Binding LogMessages}" Background="Transparent" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontSize="12" FontFamily="Monospace"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+              </ScrollViewer>
+            </Border>
+          </StackPanel>
+        </Expander>
+
+        <!-- Footer -->
+        <TextBlock Text="Created by WarreTh" HorizontalAlignment="Center" Opacity="0.4" FontSize="10" Margin="0,20,0,0"/>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
 </UserControl>

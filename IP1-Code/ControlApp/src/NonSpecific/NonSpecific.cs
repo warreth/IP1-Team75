@@ -71,4 +71,18 @@ namespace NonSpecific
         public static string ReadLog() => ReadFile(GetPath())!; //ReadFile(fileName);
     }
 
+    public class Helper
+    {
+        private static Helper? _instance;
+        public static Helper Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new Helper();
+                return _instance;
+            }
+        }
+        public static string BaseUrl { get; set; } = "";
+    }
+
 }

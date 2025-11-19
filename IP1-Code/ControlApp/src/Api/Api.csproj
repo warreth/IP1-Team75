@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NonSpecific\NonSpecific.csproj"/>
+    <ProjectReference Include="..\PinController\PinController.csproj"/>
   </ItemGroup>
 </Project>

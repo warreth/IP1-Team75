@@ -1,51 +1,69 @@
-# Project objectives: 
-#   Print a "Hello world!" text on the LCD screen to test its functionality
-#   Learn how to use I2C communication between the LCD and Raspberry Pi Pico
-#   Get familiarized with the pico_i2c_lcd and lcd_api modules
-#
-# Hardware and connections used:
-#   LCD GND Pin to Raspberry Pi Pico GND
-#   LCD VCC Pin to Raspberry Pi Pico VBUS 
-#   (Note: VBUS is only to be used as power for the screen. 
-#   It can't be used as power for the entire circuit if there are other components interfaced.)
-#   LCD SDA Pin to Raspberry Pi Pico GPIO Pin 0
-#   LCD SCL Pin to Raspberry Pi Pico GPIO Pin 1
-#
-# Programmer: Adrian Josele G. Quional
+"""
+This Raspberry Pi Pico MicroPython code was developed by newbiely.com
+This Raspberry Pi Pico code is made available for public use without any restriction
+For comprehensive instructions and wiring diagrams, please visit:
+https://newbiely.com/tutorials/raspberry-pico/raspberry-pi-pico-lcd-i2c
+"""
 
-# modules
-from machine import I2C, Pin    # since I2C communication would be used, I2C class is imported
+from machine import I2C, Pin
 from time import sleep
 import time
+import utime
+sleep(1)
+from DIYables_MicroPython_LCD_I2C import LCD_I2C
+import math
 
-# very important
-# this module needs to be saved in the Raspberry Pi Pico in order for the LCD I2C to be used 
-from pico_i2c_lcd import I2cLcd
 
-# creating an I2C object, specifying the data (SDA) and clock (SCL) pins used in the Raspberry Pi Pico
-# any SDA and SCL pins in the Raspberry Pi Pico can be used (check documentation for SDA and SCL pins)
-i2c = I2C(0, sda=Pin(0), scl=Pin(1), freq=400000)
+
+
+# The I2C address of your LCD (Update if different)
+I2C_ADDR = 0x27  # Use the address found using the I2C scanner
+
+# Define the number of rows and columns on your LCD
+LCD_ROWS = 2
+LCD_COLS = 16
+
+# Initialize I2C
+i2c = I2C(0, sda=Pin(4), scl=Pin(5), freq=400000)
 
 # getting I2C address
 I2C_ADDR = i2c.scan()[0]
+print(hex(I2C_ADDR))
 
-# creating an LCD object using the I2C address and specifying number of rows and columns in the LCD
-# LCD number of rows = 2, number of columns = 16
-lcd = I2cLcd(i2c, I2C_ADDR, 2, 16)
+# Initialize LCD
+lcd = LCD_I2C(i2c, I2C_ADDR, LCD_ROWS, LCD_COLS)
 
-# continuously print and clear "Hello world!" text in the LCD screen while the board has power
+# Setup function
+lcd.backlight_on()
+lcd.clear()
+teller = time.time()
+duratie_current_cycle = 14*60
+naam_current_cycle = "HOOFDLICHT"
+# Main loop function
 while True:
     lcd.clear()
-    lcd.putstr("UGent \n")
-    lcd.putstr("elektronica-ICT")
-    time.sleep(2)
-    
+    lcd.set_cursor(5, 0) # Move the cursor to column 3, row 0 (first row)
+    lcd.print("UGent")
+    lcd.set_cursor(0, 1) # Move the cursor to column 0, row 1 (second row)
+    lcd.print("elektronica-ICT")
+    utime.sleep(2)
+
     lcd.clear()
-    water_vochtigheid = 51
-    duratie = 375
-    minuten = round(duratie)
+    water_vochtigheid = 74
+    lcd.set_cursor(0, 0) # Move to the beginning of the first row
+    lcd.print("Watervochtigheid")
+    lcd.set_cursor(0, 1)  # Move to the beginning of the second row
+    lcd.print(f"{water_vochtigheid}%")
+    utime.sleep(2)
+
+    lcd.clear()
+    duratie = duratie_current_cycle - (time.time() - teller)/60
+    minuten = math.ceil(duratie) - 1
     uren = minuten // 60
     minuten = minuten % 60
-    lcd.putstr(f"H20 {water_vochtigheid:.1d} % \n")  # Print integer
-    lcd.putstr(f"{uren}u en {minuten}min")
-    time.sleep(2)
+    lcd.set_cursor(0, 0) # Move to the beginning of the first row
+    lcd.print(f'{naam_current_cycle}')
+    lcd.set_cursor(0, 1) # Move to the beginning of the first row
+    lcd.print(f"{uren} : {minuten} over")
+    utime.sleep(2)
+lcd.print()

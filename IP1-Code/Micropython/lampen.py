@@ -1,5 +1,41 @@
 import machine
 
-def set_led_brightness(led, brightness):
+# Pin definities voor de LEDs
+DAGLICHT_PIN = 13
+BLOOMING_PIN = 14
+INFRARED_PIN = 15
+
+# Initialiseer de PWM voor elke LED
+daglicht_led = machine.PWM(machine.Pin(DAGLICHT_PIN))
+blooming_led = machine.PWM(machine.Pin(BLOOMING_PIN))
+infrared_led = machine.PWM(machine.Pin(INFRARED_PIN))
+
+
+blooming_led_brightness = 0
+infrared_led_brightness = 0
+daglicht_led_brightness = 0
+
+def __set_led_brightness(led, brightness): # !Private! function to set brightness
     led.freq(1000)
     led.duty_u16(brightness)
+
+def set_infrared_brightness(brightness):
+    global infrared_led_brightness
+    infrared_led_brightness = brightness
+    __set_led_brightness(infrared_led, infrared_led_brightness)
+    print("DEBUG: Infrared LED brightness set to:", infrared_led_brightness)
+
+def set_blooming_brightness(brightness):
+    global blooming_led_brightness
+    blooming_led_brightness = brightness
+    __set_led_brightness(blooming_led, blooming_led_brightness)
+    print("DEBUG: Blooming LED brightness set to:", blooming_led_brightness)
+
+def set_daglicht_brightness(brightness):
+    global daglicht_led_brightness
+    daglicht_led_brightness = brightness
+    __set_led_brightness(daglicht_led, daglicht_led_brightness)
+    print("DEBUG: Daglicht LED brightness set to:", daglicht_led_brightness)
+
+def return_led_brightness():
+    return (daglicht_led_brightness, blooming_led_brightness, infrared_led_brightness)

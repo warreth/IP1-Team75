@@ -1,6 +1,7 @@
 ﻿using static NonSpecific.ErrorHandler;
 using static NonSpecific.Logger;
-using Api;
+using NonSpecific; // For Helper
+using PinController; // For PinControl
 
 // Main entry point
 public class Program
@@ -9,13 +10,13 @@ public class Program
     public static string apiUrl = "https://localhost:8080";
     public static void Main(string[] args)
     {
-        // Create shared pin controller
-        PinController sharedPin = new();
+        // Initialize pin controller
+        PinControl.Initialize();
         // Set API base URL
         Helper.BaseUrl = apiUrl;
 
-        // Start API and image server in background threads
-        Task.Run(() => ApiHost.Start(sharedHatch, "8080"));
+        // Start API in background threads
+        Task.Run(() => ApiHost.Start("8080"));
 
         //! Start video controller to stream video from rpi camV2
     }

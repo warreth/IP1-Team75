@@ -84,4 +84,19 @@ public class ApiService
             return $"UnexpectedError: An unexpected error occurred. Message: {e.Message}";
         }
     }
+
+    public async Task<string?> GetRawJsonAsync(string pUrl, string endpoint)
+    {
+        if (string.IsNullOrWhiteSpace(pUrl)) return null;
+        string fullUrl = $"{pUrl.TrimEnd('/')}/{endpoint.TrimStart('/')}";
+        try
+        {
+            return await _client.GetStringAsync(fullUrl);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"API Error: {ex.Message}");
+            return null;
+        }
+    }
 }

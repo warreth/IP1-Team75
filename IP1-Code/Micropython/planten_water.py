@@ -11,6 +11,7 @@ async def run_planten_water():
         if vochtigheid_waarde < 40:
             print("Vochtigheid laag, pomp aanzetten.")
             pomp.set_pomp_speed(30000)
+
             await uasyncio.sleep(10)
             pomp.set_pomp_speed(0) # Zet de pomp uit
             print("Pomp uitgezet.")

@@ -6,6 +6,7 @@ import planten_licht
 import pomp
 import planten_water
 import lcd
+import rp3_coms
  # Init de LED's en pomp
 
 '''
@@ -17,7 +18,7 @@ pomp_ch1 = machine.PWM(machine.Pin(12))
 
 #! source for async func: https://forums.raspberrypi.com/viewtopic.php?t=342824
 
-async def start():
+async def main():
     #! IMPORTANT: Both run_planten_water and licht_cyclus MUST be defined as 'async def'
     # and use 'await uasyncio.sleep()' instead of 'time.sleep()'.
     # If run_planten_water is a normal function with a loop, it will block here forever.
@@ -25,6 +26,7 @@ async def start():
     # Schedule tasks to run concurrently
     uasyncio.create_task(planten_water.run_planten_water())
     uasyncio.create_task(planten_licht.licht_cyclus())
+    uasyncio.create_task(rp3_coms.run_coms())
     
     # Keep the main loop alive so background tasks can run
     while True:
@@ -32,7 +34,7 @@ async def start():
 
 if __name__ == '__main__':
     try:
-        uasyncio.run(start())
+        uasyncio.run(main())
     except KeyboardInterrupt:
         print("Program stopped by user.")
     # lcd.start_lcd_display(60, "test")

@@ -13,8 +13,12 @@ for cmd in dotnet sshpass scp ssh konsole; do
 done
 
 # Dynamically determine the project folder name from the current working directory (where the script is run)
-project_dir="$(pwd)"
-projectName="$(basename "$project_dir")"
+# project_dir="$(pwd)"
+# projectName="$(basename "$project_dir")"
+
+# Target MainController explicitly
+projectName="MainController"
+project_path="MainController"
 
 # Error checking: Ensure projectName is not empty
 if [[ -z "$projectName" ]]; then
@@ -53,7 +57,7 @@ fi
 
 # Step 1: Publish the .NET project for Raspberry Pi 4 (linux-arm64) as a single file
 # Use --runtime linux-arm64 and -p:PublishSingleFile=true for ARM64 single-file output
-publish_output=$(dotnet publish --configuration Release --runtime linux-arm64  2>&1) #-p:PublishSingleFile=true
+publish_output=$(dotnet publish "$project_path" --configuration Release --runtime linux-arm64 2>&1) #-p:PublishSingleFile=true
 publish_status=$?
 
 # Check if publish succeeded by exit status only
@@ -66,28 +70,7 @@ else
 fi
 
 # Define the publish directory for .NET 9.0
-publish_dir="bin/Release/net9.0/linux-arm64/publish"
-
-# If the project is MainController, copy wwwroot from ImageServer to publish_dir
-if [[ "$projectName" == "MainController" ]]; then
-    src_wwwroot="../ImageServer/wwwroot"
-    dest_wwwroot="$publish_dir/wwwroot"
-    # Error checking: Ensure source wwwroot exists
-    if [[ ! -d "$src_wwwroot" ]]; then
-        echo "Error: Source wwwroot directory $src_wwwroot does not exist."
-        exit 1
-    fi
-    # Remove any existing wwwroot in publish_dir to avoid stale files
-    rm -rf "$dest_wwwroot"
-    # Copy wwwroot directory and its contents, preserving permissions
-    cp -a "$src_wwwroot" "$dest_wwwroot"
-    # Error checking: Ensure copy succeeded
-    if [[ $? -ne 0 || ! -d "$dest_wwwroot" ]]; then
-        echo "Error: Failed to copy wwwroot to publish directory."
-        exit 1
-    fi
-    echo "Copied wwwroot to publish directory."
-fi
+publish_dir="$project_path/bin/Release/net9.0/linux-arm64/publish"
 
 # Error checking: Ensure publish_dir exists and is not empty
 if [[ ! -d "$publish_dir" || -z $(ls -A "$publish_dir") ]]; then

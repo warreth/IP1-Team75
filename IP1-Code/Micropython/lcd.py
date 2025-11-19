@@ -5,7 +5,8 @@ import time
 sleep(1)
 from DIYables_MicroPython_LCD_I2C import LCD_I2C
 import vochtigheid
-import planten_licht
+import timer_manager
+import math
 
 def init_lcd():
     I2C_ADDR = 0x27  # Adress van de I2C
@@ -19,13 +20,11 @@ def init_lcd():
     lcd.backlight_on()
     lcd.clear()
     return lcd
-    
 
-def start_lcd_display(duratie_current_cycle, naam_current_cycle):
+def start_lcd_display(duratie_cycle, naam_current_cycle):
     lcd = init_lcd()
     global keep_going
     keep_going = True
-    teller = time.time()
 
     while (keep_going==True):
         lcd.clear()
@@ -38,18 +37,15 @@ def start_lcd_display(duratie_current_cycle, naam_current_cycle):
         lcd.clear()
         water_vochtigheid = vochtigheid.read_vochtigheid()
         lcd.set_cursor(0, 0) # Move to the beginning of the first row
-        lcd.print("Watervochtigheid")
+        lcd.print(f"Watervochtigheid")
         lcd.set_cursor(0, 1)  # Move to the beginning of the second row
         lcd.print(f"{water_vochtigheid}%")
         utime.sleep(2)
 
         lcd.clear()
-        duratie = duratie_current_cycle - (time.time() - teller)/60
-        minuten = round(duratie)
-        uren = minuten // 60
-        minuten = minuten % 60
+        uren, minuten = timer_manager.get_remaining_time()
         lcd.set_cursor(0, 0) # Move to the beginning of the first row
-        lcd.print({naam_current_cycle})
+        lcd.print(f"{naam_current_cycle}")
         lcd.set_cursor(0, 1) # Move to the beginning of the first row
         lcd.print(f"{uren} : {minuten} over")
         utime.sleep(2)
