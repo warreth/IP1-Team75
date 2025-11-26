@@ -20,22 +20,25 @@ def __set_led_brightness(led, brightness): # !Private! function to set brightnes
     led.duty_u16(brightness)
 
 def set_infrared_brightness(brightness):
+    import rp3_coms
     global infrared_led_brightness
     infrared_led_brightness = brightness
     __set_led_brightness(infrared_led, infrared_led_brightness)
-    print("DEBUG: Infrared LED brightness set to:", infrared_led_brightness)
+    rp3_coms.send_log(f"DEBUG: Infrared LED brightness set to: {infrared_led_brightness}", is_debug=True)
 
 def set_blooming_brightness(brightness):
+    import rp3_coms
     global blooming_led_brightness
     blooming_led_brightness = brightness
     __set_led_brightness(blooming_led, blooming_led_brightness)
-    print("DEBUG: Blooming LED brightness set to:", blooming_led_brightness)
+    rp3_coms.send_log(f"DEBUG: Blooming LED brightness set to: {blooming_led_brightness}", is_debug=True)
 
 def set_daglicht_brightness(brightness):
+    import rp3_coms
     global daglicht_led_brightness
     daglicht_led_brightness = brightness
     __set_led_brightness(daglicht_led, daglicht_led_brightness)
-    print("DEBUG: Daglicht LED brightness set to:", daglicht_led_brightness)
+    rp3_coms.send_log(f"DEBUG: Daglicht LED brightness set to: {daglicht_led_brightness}", is_debug=True)
 
 def return_led_brightness():
     return (daglicht_led_brightness, blooming_led_brightness, infrared_led_brightness)

@@ -13,7 +13,7 @@ namespace App.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private string apiUrl = "https://ip75-pi3.netbird.cloud:8080";
+    private string apiUrl = "http://ip75-pi3.netbird.cloud:8080";
 
     // Add properties for editing and saving settings
     [ObservableProperty]

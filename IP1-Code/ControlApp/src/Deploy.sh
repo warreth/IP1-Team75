@@ -13,12 +13,9 @@ for cmd in dotnet sshpass scp ssh konsole; do
 done
 
 # Dynamically determine the project folder name from the current working directory (where the script is run)
-# project_dir="$(pwd)"
-# projectName="$(basename "$project_dir")"
-
-# Target MainController explicitly
-projectName="MainController"
-project_path="MainController"
+project_dir="$(pwd)"
+projectName="$(basename "$project_dir")"
+project_path="."
 
 # Error checking: Ensure projectName is not empty
 if [[ -z "$projectName" ]]; then
@@ -57,7 +54,7 @@ fi
 
 # Step 1: Publish the .NET project for Raspberry Pi 4 (linux-arm64) as a single file
 # Use --runtime linux-arm64 and -p:PublishSingleFile=true for ARM64 single-file output
-publish_output=$(dotnet publish "$project_path" --configuration Release --runtime linux-arm64 2>&1) #-p:PublishSingleFile=true
+publish_output=$(dotnet publish "$project_path" --configuration Release --runtime linux-arm64 -o "$project_path/bin/Release/publish" 2>&1) #-p:PublishSingleFile=true
 publish_status=$?
 
 # Check if publish succeeded by exit status only
@@ -69,8 +66,8 @@ else
     exit 1
 fi
 
-# Define the publish directory for .NET 9.0
-publish_dir="$project_path/bin/Release/net9.0/linux-arm64/publish"
+# Define the publish directory
+publish_dir="$project_path/bin/Release/publish"
 
 # Error checking: Ensure publish_dir exists and is not empty
 if [[ ! -d "$publish_dir" || -z $(ls -A "$publish_dir") ]]; then

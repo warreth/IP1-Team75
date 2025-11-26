@@ -15,9 +15,9 @@ public static class ApiHost
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders(); // Removes Console logger and others
 
-        builder.WebHost.UseUrls($"https://0.0.0.0:{port}");
+        builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
         var app = builder.Build();
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
 
         // Root endpoint
         app.MapGet("/", () => "The API is online");
@@ -31,7 +31,7 @@ public static class ApiHost
             var status = PinControl.GetLatestStatus();
             if (status == null)
             {
-                return Results.Problem("Could not retrieve status from Pico.");
+                return Results.Problem(detail: "No status received from Pico yet. Check serial connection.", statusCode: 503);
             }
             return Results.Ok(status);
         });

@@ -9,9 +9,10 @@ def get_pomp_speed():
     return pomp_speed
 
 def set_pomp_speed(speed: int):
+    import rp3_coms
     global pomp_speed
     pomp_speed = speed
     
     pomp_ch1.freq(1000)
     pomp_ch1.duty_u16(pomp_speed)
-    print("DEBUG: Pomp snelheid ingesteld op:", pomp_speed)
+    rp3_coms.send_log(f"DEBUG: Pomp snelheid ingesteld op: {pomp_speed}", is_debug=True)

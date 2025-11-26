@@ -17,14 +17,15 @@ def _raw_to_percent(raw: int) -> int:
     return int(round(percent))
 
 def read_vochtigheid() -> int:
+    import rp3_coms
     # Read ADC, convert to percentage, print concise message, return percentage.
     try:
         sensor = ADC(Pin(ADC_PIN))
         raw_value = sensor.read_u16()
     except Exception as e:
-        print(f"ERROR: Failed to read ADC on GP{ADC_PIN}: {e}")
+        rp3_coms.send_log(f"ERROR: Failed to read ADC on GP{ADC_PIN}: {e}")
         return 0
 
     percentage = _raw_to_percent(raw_value)
-    print(f"De aarde is {percentage}% nat")
+    rp3_coms.send_log(f"De aarde is {percentage}% nat", is_debug=True)
     return percentage

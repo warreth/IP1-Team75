@@ -35,40 +35,50 @@ public static class PinControl
     private static List<string> _logs = new List<string>();
     private static object _logLock = new object();
     private static bool _isRunning = false;
+    private static string _devicePath = "/dev/serial0";
+    private static int _baudRate = 9600;
 
     // On Raspberry Pi 3:
     // /dev/serial0 usually maps to GPIO 14 (TX) and 15 (RX)
     //! Bron: https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3-pizerow-pi4-or-later-models#45571
-    public static void Initialize(string devicePath = "/dev/serial0", int baudRate = 115200)
+    public static void Initialize(string devicePath = "/dev/serial0", int baudRate = 9600)
     {
-        try
-        {
-            if (_serialPort != null && _serialPort.IsOpen) _serialPort.Close();
-
-            // We connect to the specific device file associated with the desired TX/RX pins
-            _serialPort = new SerialPort(devicePath, baudRate);
-            _serialPort.ReadTimeout = 500;
-            _serialPort.WriteTimeout = 500;
-            _serialPort.Open();
-            Console.WriteLine($"Connected to {devicePath}");
-
-            _isRunning = true;
-            Task.Run(ReadSerialPort);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Serial Init Error: {ex.Message}");
-        }
+        _devicePath = devicePath;
+        _baudRate = baudRate;
+        _isRunning = true;
+        Task.Run(ReadSerialPort);
     }
 
     private static void ReadSerialPort()
     {
-        while (_isRunning && _serialPort != null && _serialPort.IsOpen)
+        while (_isRunning)
         {
             try
             {
+                if (_serialPort == null || !_serialPort.IsOpen)
+                {
+                    try
+                    {
+                        Console.WriteLine($"Connecting to {_devicePath}...");
+                        _serialPort = new SerialPort(_devicePath, _baudRate);
+                        _serialPort.ReadTimeout = 500;
+                        _serialPort.WriteTimeout = 500;
+                        _serialPort.Open();
+                        Console.WriteLine($"Connected to {_devicePath}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Connection Error: {ex.Message}");
+                        Thread.Sleep(2000);
+                        continue;
+                    }
+                }
+
                 string line = _serialPort.ReadLine();
                 if (string.IsNullOrWhiteSpace(line)) continue;
+
+                // Debug: Print received data
+                Console.WriteLine($"[Serial RX]: {line}");
 
                 line = line.Trim();
                 if (line.StartsWith("{"))
@@ -77,7 +87,10 @@ public static class PinControl
                     {
                         _latestStatus = JsonSerializer.Deserialize<PicoStatus>(line);
                     }
-                    catch { /* Ignore JSON errors */ }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Serial JSON Error]: {ex.Message}");
+                    }
                 }
                 else
                 {
@@ -100,6 +113,11 @@ public static class PinControl
             catch (Exception ex)
             {
                 Console.WriteLine($"Serial Read Error: {ex.Message}");
+                if (_serialPort != null)
+                {
+                    try { _serialPort.Close(); } catch { }
+                    _serialPort = null;
+                }
                 Thread.Sleep(1000); // Wait a bit before retrying
             }
         }
@@ -138,7 +156,11 @@ public static class PinControl
     // An function to run a command using a number (start pomp, stop pomp, move lampen)
     public static void SendCommand(string command, int value)
     {
-        if (_serialPort == null || !_serialPort.IsOpen) return;
+        if (_serialPort == null || !_serialPort.IsOpen)
+        {
+            Console.WriteLine($"Cannot send command '{command}': Serial port not open.");
+            return;
+        }
 
         try
         {

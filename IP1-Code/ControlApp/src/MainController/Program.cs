@@ -7,7 +7,7 @@ using PinController; // For PinControl
 public class Program
 {
     // Image server and API URLs
-    public static string apiUrl = "https://localhost:8080";
+    public static string apiUrl = "http://localhost:8080";
     public static void Main(string[] args)
     {
         // Initialize pin controller
@@ -19,5 +19,8 @@ public class Program
         Task.Run(() => ApiHost.Start("8080"));
 
         //! Start video controller to stream video from rpi camV2
+
+        // Keep the application running
+        Thread.Sleep(Timeout.Infinite);
     }
 }
