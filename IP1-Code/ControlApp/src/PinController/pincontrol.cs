@@ -30,18 +30,21 @@ public class PicoStatus
 
 public static class PinControl
 {
+    private const string DefaultDevicePath = "/dev/serial0";
+    private const int DefaultBaudRate = 9600;
+
     private static SerialPort? _serialPort;
     private static PicoStatus? _latestStatus;
     private static List<string> _logs = new List<string>();
     private static object _logLock = new object();
     private static bool _isRunning = false;
-    private static string _devicePath = "/dev/serial0";
-    private static int _baudRate = 9600;
+    private static string _devicePath = DefaultDevicePath;
+    private static int _baudRate = DefaultBaudRate;
 
     // On Raspberry Pi 3:
     // /dev/serial0 usually maps to GPIO 14 (TX) and 15 (RX)
     //! Bron: https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3-pizerow-pi4-or-later-models#45571
-    public static void Initialize(string devicePath = "/dev/serial0", int baudRate = 9600)
+    public static void Initialize(string devicePath = DefaultDevicePath, int baudRate = DefaultBaudRate)
     {
         _devicePath = devicePath;
         _baudRate = baudRate;
@@ -51,6 +54,8 @@ public static class PinControl
 
     private static void ReadSerialPort()
     {
+        DateTime lastDataReceived = DateTime.Now;
+
         while (_isRunning)
         {
             try
@@ -61,10 +66,12 @@ public static class PinControl
                     {
                         Console.WriteLine($"Connecting to {_devicePath}...");
                         _serialPort = new SerialPort(_devicePath, _baudRate);
+                        _serialPort.Encoding = System.Text.Encoding.UTF8;
                         _serialPort.ReadTimeout = 500;
                         _serialPort.WriteTimeout = 500;
                         _serialPort.Open();
                         Console.WriteLine($"Connected to {_devicePath}");
+                        lastDataReceived = DateTime.Now;
                     }
                     catch (Exception ex)
                     {
@@ -74,7 +81,22 @@ public static class PinControl
                     }
                 }
 
+                // Check if data has not been received for 10 seconds
+                if ((DateTime.Now - lastDataReceived).TotalSeconds > 10)
+                {
+                    Console.WriteLine("No data received for 10 seconds. Restarting connection...");
+                    if (_serialPort != null)
+                    {
+                        try { _serialPort.Close(); } catch { }
+                        _serialPort = null;
+                    }
+                    lastDataReceived = DateTime.Now;
+                    continue;
+                }
+
                 string line = _serialPort.ReadLine();
+                lastDataReceived = DateTime.Now;
+
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
                 // Debug: Print received data

@@ -7,6 +7,7 @@ import pomp
 import planten_water
 import lcd
 import rp3_coms
+import utime as time
 
 # Monkey-patch rp3_coms to prevent infinite feedback loop
 # The RPi3 echoes logs, causing the Pico to read them as invalid commands and log errors, creating a loop.
@@ -36,11 +37,12 @@ async def main():
     #! IMPORTANT: Both run_planten_water and licht_cyclus MUST be defined as 'async def'
     # and use 'await uasyncio.sleep()' instead of 'time.sleep()'.
     # If run_planten_water is a normal function with a loop, it will block here forever.
-    
+
+
     # Schedule tasks to run concurrently
+    uasyncio.create_task(rp3_coms.run_coms())
     uasyncio.create_task(planten_water.run_planten_water())
     uasyncio.create_task(planten_licht.licht_cyclus())
-    uasyncio.create_task(rp3_coms.run_coms())
     uasyncio.create_task(lcd.run_lcd_loop())
     
     # Keep the main loop alive so background tasks can run

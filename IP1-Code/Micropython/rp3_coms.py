@@ -12,7 +12,8 @@ import timer_manager
 # TX pin (e.g., GP0) connects to RX on RPi4
 # RX pin (e.g., GP1) connects to TX on RPi4
 # Lowered to 9600 for stability
-uart = machine.UART(0, baudrate=9600, tx=machine.Pin(0), rx=machine.Pin(1), bits=8, parity=None, stop=1) #TODO: Moet de 0 een 1 zijn?
+# Added timeout to prevent blocking
+uart = machine.UART(1, baudrate=9600, tx=machine.Pin(8), rx=machine.Pin(9), timeout=100)
 
 debug_on = False
 
@@ -45,6 +46,18 @@ async def send_status(humidity, lamp1_val, lamp2_val, lamp3_val, pump_speed, ure
         
     except Exception as e:
         send_log(f"Error sending data: {e}")
+
+async def send_status_update():
+    print("Sending status update...")
+    # Send status update with sensor values
+    vochtigheid_waarde = vochtigheid.read_vochtigheid()
+    pomp_snelheid = pomp.get_pomp_speed()
+    DaglichtBR, bloomingBR, infaredBR = lampen.return_led_brightness()
+    current_uren, current_minuten = timer_manager.get_remaining_time()
+    current_cycle = timer_manager.get_current_cycle()
+
+    await send_status(vochtigheid_waarde, DaglichtBR, bloomingBR, infaredBR, pomp_snelheid, current_uren, current_minuten, current_cycle)
+
 
 def send_log(message, is_debug=False):
     """
@@ -104,16 +117,16 @@ async def run_coms():
     """
     Async loop to handle communication with RPi4.
     """
+    last_status_time = 0
+    
     while True:
-        # Send status update with sensor values
-        vochtigheid_waarde = vochtigheid.read_vochtigheid()
-        pomp_snelheid = pomp.get_pomp_speed()
-        DaglichtBR, bloomingBR, infaredBR = lampen.return_led_brightness()
-        current_uren, current_minuten = timer_manager.get_remaining_time()
-        current_cycle = timer_manager.get_current_cycle()
-
-        await send_status(vochtigheid_waarde, DaglichtBR, bloomingBR, infaredBR, pomp_snelheid, current_uren, current_minuten, current_cycle)
-
+        current_time = utime.ticks_ms()
+        
+        # Send status update every 1000ms (1 second)
+        if utime.ticks_diff(current_time, last_status_time) >= 1000:
+            await send_status_update()
+            last_status_time = current_time
+        
         # Check for incoming commands (returns a dict or None)
         cmd_data = await receive_command()
         
@@ -174,7 +187,8 @@ async def run_coms():
                 else:
                     send_log(f"Unknown command: {cmd_name}")
         
-        # Wait 1 second before next update
-        await uasyncio.sleep(1)
+        # Short sleep to allow other tasks to run and prevent CPU hogging
+        # This makes the loop run at ~10Hz, checking for commands frequently
+        await uasyncio.sleep(0.1)
 
 
