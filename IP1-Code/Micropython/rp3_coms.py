@@ -12,8 +12,7 @@ import timer_manager
 # TX pin (e.g., GP0) connects to RX on RPi4
 # RX pin (e.g., GP1) connects to TX on RPi4
 # Lowered to 9600 for stability
-# Added timeout to prevent blocking
-uart = machine.UART(1, baudrate=9600, tx=machine.Pin(8), rx=machine.Pin(9), timeout=100)
+uart = machine.UART(1, baudrate=9600, tx=machine.Pin(8), rx=machine.Pin(9))
 
 debug_on = False
 
@@ -36,13 +35,14 @@ async def send_status(humidity, lamp1_val, lamp2_val, lamp3_val, pump_speed, ure
         
         # Convert dictionary to JSON string
         json_str = ujson.dumps(data)
+
+        #print(f"Sending status: {json_str}")  # For debugging
         
         # Send the string followed by a newline character
         # Explicitly encode to bytes for reliability
-        uart.write(f"{json_str}\n".encode('utf-8'))
+        uart.write(f"{json_str}\n")
         
         # Yield control to allow other async tasks to run
-        await uasyncio.sleep(0)
         
     except Exception as e:
         send_log(f"Error sending data: {e}")
@@ -117,15 +117,8 @@ async def run_coms():
     """
     Async loop to handle communication with RPi4.
     """
-    last_status_time = 0
-    
     while True:
-        current_time = utime.ticks_ms()
-        
-        # Send status update every 1000ms (1 second)
-        if utime.ticks_diff(current_time, last_status_time) >= 1000:
-            await send_status_update()
-            last_status_time = current_time
+        await send_status_update()
         
         # Check for incoming commands (returns a dict or None)
         cmd_data = await receive_command()
@@ -187,8 +180,7 @@ async def run_coms():
                 else:
                     send_log(f"Unknown command: {cmd_name}")
         
-        # Short sleep to allow other tasks to run and prevent CPU hogging
-        # This makes the loop run at ~10Hz, checking for commands frequently
-        await uasyncio.sleep(0.1)
+        # Wait 1 second before next update
+        await uasyncio.sleep(1)
 
 
