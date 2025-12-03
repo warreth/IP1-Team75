@@ -23,7 +23,6 @@ rp3_coms.send_log = _safe_send_log
 rp3_coms.debug_on = False
 
  # Init de LED's en pomp
-
 '''
 led_ch4 = machine.PWM(machine.Pin(15))
 led_ch3 = machine.PWM(machine.Pin(14))
@@ -40,10 +39,10 @@ async def main():
 
 
     # Schedule tasks to run concurrently
-    uasyncio.create_task(rp3_coms.run_coms())
     uasyncio.create_task(planten_water.run_planten_water())
     uasyncio.create_task(planten_licht.licht_cyclus())
     uasyncio.create_task(lcd.run_lcd_loop())
+    uasyncio.create_task(rp3_coms.run_coms())
     
     # Keep the main loop alive so background tasks can run
     while True:

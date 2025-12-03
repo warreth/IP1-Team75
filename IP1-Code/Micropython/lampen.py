@@ -15,6 +15,9 @@ blooming_led_brightness = 0
 infrared_led_brightness = 0
 daglicht_led_brightness = 0
 
+# Manual override flag - when True, automatic cycle will not change lamp values
+manual_override = False
+
 def __set_led_brightness(led, brightness): # !Private! function to set brightness
     led.freq(1000)
     led.duty_u16(brightness)
@@ -42,3 +45,10 @@ def set_daglicht_brightness(brightness):
 
 def return_led_brightness():
     return (daglicht_led_brightness, blooming_led_brightness, infrared_led_brightness)
+
+def set_manual_override(enabled):
+    global manual_override
+    manual_override = enabled
+
+def is_manual_override():
+    return manual_override

@@ -15,6 +15,12 @@ import timer_manager
 uart = machine.UART(1, baudrate=9600, tx=machine.Pin(8), rx=machine.Pin(9))
 
 debug_on = False
+debug_print_on = True  # Set to False to disable debug print statements
+
+def debug_print(message):
+    """Print debug message if debug printing is enabled."""
+    if debug_print_on:
+        print(message)
 
 async def send_status(humidity, lamp1_val, lamp2_val, lamp3_val, pump_speed, uren, minuten, cycle):
     """
@@ -48,7 +54,7 @@ async def send_status(humidity, lamp1_val, lamp2_val, lamp3_val, pump_speed, ure
         send_log(f"Error sending data: {e}")
 
 async def send_status_update():
-    print("Sending status update...")
+    #print("Sending status update...")
     # Send status update with sensor values
     vochtigheid_waarde = vochtigheid.read_vochtigheid()
     pomp_snelheid = pomp.get_pomp_speed()
@@ -69,7 +75,7 @@ def send_log(message, is_debug=False):
     try:
         # Send the log message prefixed with LOG:
         uart.write(f"LOG:{message}\n".encode('utf-8'))
-        print(message) # Also print locally for debugging
+        #print(message) # Also print locally for debugging
     except Exception as e:
         print(f"Error sending log: {e}")
 
@@ -131,42 +137,105 @@ async def run_coms():
             # Only process if it is actually a command (has a 'command' key)
             # This filters out echoed status updates which are valid JSON but lack 'command'
             if cmd_name:
+                debug_print(f"Processing command: {cmd_name} with value: {cmd_value}")
                 send_log(f"Received command data: {cmd_data}")
 
                 if cmd_name == "CHANGE_POMP_SPEED":
                     if cmd_value is not None:
                         try:
-                            # Update pump speed
-                            pomp.set_pomp_speed(int(cmd_value))
-                            send_log(f"Pomp snelheid ingesteld op {cmd_value}.")
+                            speed_val = int(cmd_value)
+                            if speed_val == 0:
+                                # Setting to 0 disables manual override and resumes automatic cycle
+                                pomp.set_manual_override(False)
+                                pomp.set_pomp_speed(0)
+                                debug_print("Pump set to 0, manual override disabled")
+                                send_log("Pomp op 0 gezet, automatische cyclus hervat.")
+                            else:
+                                # Enable manual override so automatic cycle doesn't overwrite
+                                pomp.set_manual_override(True)
+                                pomp.set_pomp_speed(speed_val)
+                                debug_print(f"Pump speed set to {cmd_value}")
+                                send_log(f"Pomp snelheid ingesteld op {cmd_value} (manual override enabled).")
                         except Exception as e:
+                            debug_print(f"Pump error: {e}")
                             send_log(f"Error setting pump speed: {e}")
                     else:
                         send_log("Error: Value missing for CHANGE_POMP_SPEED")
-                elif cmd_name == "SET_LAMP_DL_BRIGHTNESS": #daglicht
+                elif cmd_name == "SET_LAMP_DL_BRIGHTNESS":
                     if cmd_value is not None:
                         try:
-                            lampen.set_daglicht_brightness(int(cmd_value))
-                            send_log(f"Daglicht helderheid ingesteld op {cmd_value}.")
+                            brightness_val = int(cmd_value)
+                            if brightness_val == 0:
+                                # Check if all lamps are being set to 0, then disable override
+                                lampen.set_daglicht_brightness(0)
+                                # Disable override if all lamps are at 0
+                                dl, bloom, ir = lampen.return_led_brightness()
+                                if dl == 0 and bloom == 0 and ir == 0:
+                                    lampen.set_manual_override(False)
+                                    send_log("Alle lampen op 0, automatische cyclus hervat.")
+                                else:
+                                    send_log("Daglicht op 0 gezet.")
+                            else:
+                                # Enable manual override so automatic cycle doesn't overwrite
+                                lampen.set_manual_override(True)
+                                debug_print(f"Calling lampen.set_daglicht_brightness({cmd_value})")
+                                lampen.set_daglicht_brightness(brightness_val)
+                                debug_print(f"Daglicht brightness set to {cmd_value}")
+                                send_log(f"Daglicht helderheid ingesteld op {cmd_value} (manual override enabled).")
                         except Exception as e:
+                            debug_print(f"Daglicht error: {e}")
                             send_log(f"Error setting daglicht brightness: {e}")
                     else:
                         send_log("Error: Value missing for SET_LAMP_DL_BRIGHTNESS")
-                elif cmd_name == "SET_LAMP_BLOOM_BRIGHTNESS": #bloom
+                elif cmd_name == "SET_LAMP_BLOOM_BRIGHTNESS":
                     if cmd_value is not None:
                         try:
-                            lampen.set_blooming_brightness(int(cmd_value))
-                            send_log(f"Blooming helderheid ingesteld op {cmd_value}.")
+                            brightness_val = int(cmd_value)
+                            if brightness_val == 0:
+                                # Check if all lamps are being set to 0, then disable override
+                                lampen.set_blooming_brightness(0)
+                                # Disable override if all lamps are at 0
+                                dl, bloom, ir = lampen.return_led_brightness()
+                                if dl == 0 and bloom == 0 and ir == 0:
+                                    lampen.set_manual_override(False)
+                                    send_log("Alle lampen op 0, automatische cyclus hervat.")
+                                else:
+                                    send_log("Blooming op 0 gezet.")
+                            else:
+                                # Enable manual override so automatic cycle doesn't overwrite
+                                lampen.set_manual_override(True)
+                                debug_print(f"Calling lampen.set_blooming_brightness({cmd_value})")
+                                lampen.set_blooming_brightness(brightness_val)
+                                debug_print(f"Blooming brightness set to {cmd_value}")
+                                send_log(f"Blooming helderheid ingesteld op {cmd_value} (manual override enabled).")
                         except Exception as e:
+                            debug_print(f"Blooming error: {e}")
                             send_log(f"Error setting blooming brightness: {e}")
                     else:
                         send_log("Error: Value missing for SET_LAMP_BLOOM_BRIGHTNESS")
-                elif cmd_name == "SET_LAMP_IR_BRIGHTNESS": #infared
+                elif cmd_name == "SET_LAMP_IR_BRIGHTNESS":
                     if cmd_value is not None:
                         try:
-                            lampen.set_infared_brightness(int(cmd_value))
-                            send_log(f"Infared helderheid ingesteld op {cmd_value}.")
+                            brightness_val = int(cmd_value)
+                            if brightness_val == 0:
+                                # Check if all lamps are being set to 0, then disable override
+                                lampen.set_infrared_brightness(0)
+                                # Disable override if all lamps are at 0
+                                dl, bloom, ir = lampen.return_led_brightness()
+                                if dl == 0 and bloom == 0 and ir == 0:
+                                    lampen.set_manual_override(False)
+                                    send_log("Alle lampen op 0, automatische cyclus hervat.")
+                                else:
+                                    send_log("Infrared op 0 gezet.")
+                            else:
+                                # Enable manual override so automatic cycle doesn't overwrite
+                                lampen.set_manual_override(True)
+                                debug_print(f"Calling lampen.set_infared_brightness({cmd_value})")
+                                lampen.set_infrared_brightness(brightness_val)
+                                debug_print(f"Infared brightness set to {cmd_value}")
+                                send_log(f"Infared helderheid ingesteld op {cmd_value} (manual override enabled).")
                         except Exception as e:
+                            debug_print(f"Infared error: {e}")
                             send_log(f"Error setting infared brightness: {e}")
                     else:
                         send_log("Error: Value missing for SET_LAMP_IR_BRIGHTNESS")
@@ -177,6 +246,19 @@ async def run_coms():
                         send_log(f"Debug mode set to {debug_on}")
                     else:
                         send_log("Error: Value missing for SET_DEBUG")
+                elif cmd_name == "DISABLE_LAMP_OVERRIDE":
+                    # Disable lamp manual override to resume automatic cycle
+                    lampen.set_manual_override(False)
+                    send_log("Lamp manual override disabled, automatic cycle resumed.")
+                elif cmd_name == "DISABLE_PUMP_OVERRIDE":
+                    # Disable pump manual override to resume automatic cycle
+                    pomp.set_manual_override(False)
+                    send_log("Pump manual override disabled, automatic cycle resumed.")
+                elif cmd_name == "DISABLE_ALL_OVERRIDES":
+                    # Disable all manual overrides to resume automatic cycles
+                    lampen.set_manual_override(False)
+                    pomp.set_manual_override(False)
+                    send_log("All manual overrides disabled, automatic cycles resumed.")
                 else:
                     send_log(f"Unknown command: {cmd_name}")
         

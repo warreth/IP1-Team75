@@ -24,6 +24,7 @@ async def licht_cyclus():
     - Hoofdlicht (daglicht + blooming) staat 14 uur aan.
     - Daarna gaat het hoofdlicht uit en het infraroodlicht 1 uur aan.
     - De resterende 9 uur zijn alle lichten uit.
+    Respects manual override - will skip setting values if override is active.
     """
     rp3_coms.send_log("Lichtcyclus gestart.")
     while True:
@@ -35,9 +36,13 @@ async def licht_cyclus():
         if lcdOn: lcd.stop_lcd_display()
         if lcdOn: lcd.start_lcd_display(HOOFDLICHT_AAN_UUR*60, "HOOFDLICHT")
         
-        lampen.set_daglicht_brightness(MAX_BRIGHTNESS)
-        lampen.set_blooming_brightness(MAX_BRIGHTNESS)
-        lampen.set_infrared_brightness(OFF) # Zorg dat infrarood uit is
+        # Only set lamp values if manual override is not active
+        if not lampen.is_manual_override():
+            lampen.set_daglicht_brightness(MAX_BRIGHTNESS)
+            lampen.set_blooming_brightness(MAX_BRIGHTNESS)
+            lampen.set_infrared_brightness(OFF)
+        else:
+            rp3_coms.send_log("Manual override active, skipping automatic lamp settings.")
         
         await uasyncio.sleep(HOOFDLICHT_AAN_UUR * UUR_IN_SECONDE)
         
@@ -49,10 +54,14 @@ async def licht_cyclus():
         if lcdOn: lcd.stop_lcd_display()
         if lcdOn: lcd.start_lcd_display(INFRAROOD_AAN_UUR*60, "INFRAROOD")
         
-        lampen.set_daglicht_brightness(OFF)
-        lampen.set_blooming_brightness(OFF)
-        rp3_coms.send_log(f"Infraroodlicht AAN voor {INFRAROOD_AAN_UUR} uur.")
-        lampen.set_infrared_brightness(MAX_BRIGHTNESS)
+        # Only set lamp values if manual override is not active
+        if not lampen.is_manual_override():
+            lampen.set_daglicht_brightness(OFF)
+            lampen.set_blooming_brightness(OFF)
+            rp3_coms.send_log(f"Infraroodlicht AAN voor {INFRAROOD_AAN_UUR} uur.")
+            lampen.set_infrared_brightness(MAX_BRIGHTNESS)
+        else:
+            rp3_coms.send_log("Manual override active, skipping automatic lamp settings.")
 
         await uasyncio.sleep(INFRAROOD_AAN_UUR * UUR_IN_SECONDE)
 
@@ -65,8 +74,12 @@ async def licht_cyclus():
         if lcdOn: lcd.stop_lcd_display()
         if lcdOn: lcd.start_lcd_display(uren_uit*60, "DONKER")
         
-        rp3_coms.send_log(f"Alle lichten UIT voor {uren_uit} uur.")
-        lampen.set_infrared_brightness(OFF)
+        # Only set lamp values if manual override is not active
+        if not lampen.is_manual_override():
+            rp3_coms.send_log(f"Alle lichten UIT voor {uren_uit} uur.")
+            lampen.set_infrared_brightness(OFF)
+        else:
+            rp3_coms.send_log("Manual override active, skipping automatic lamp settings.")
 
         await uasyncio.sleep(uren_uit * UUR_IN_SECONDE)
         rp3_coms.send_log("Einde donkere fase. Nieuwe cyclus start.")
